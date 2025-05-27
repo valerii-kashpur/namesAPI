@@ -77,3 +77,11 @@ class NameCountryResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class PopularNameResponse(BaseModel):
+    name: str
+    count_of_requests: int
+
+    class Config:
+        from_attributes = True
