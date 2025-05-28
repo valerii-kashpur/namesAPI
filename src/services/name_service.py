@@ -48,7 +48,6 @@ class NameService:
                     country_info = await self.rest_countries_client.get_country_by_code(country_code)
                     if not country_info:
                         raise APIError(f"Failed to fetch country data for code {country_code}")
-                    # Extract the first element if country_info is a list
                     if isinstance(country_info, list) and country_info:
                         country_info = country_info[0]
                     rest_country = RestCountryResponse(**country_info, code=country_code)
