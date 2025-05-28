@@ -21,7 +21,7 @@ class CountryRepository:
             self.db.commit()
             return country
         except SQLAlchemyError as e:
-            self.rollback = self.db.rollback()
+            self.db.rollback()
             raise DatabaseError(f"Database error while creating country: {str(e)}")
 
     def create_country_from_rest(self, rest_country: RestCountryResponse) -> Country:
