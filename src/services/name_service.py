@@ -4,6 +4,7 @@ from src.api.schemas import NameCountryResponse, CountryDTO, RestCountryResponse
 from src.clients.nationalize import NationalizeClientInterface
 from src.clients.rest_countries import RestCountriesClientInterface
 from src.exceptions.custom_exceptions import APIError, DatabaseError
+from src.exceptions.exception_handlers import handle_api_error, handle_database_error
 from src.repositories.country_repository import CountryRepository
 from src.repositories.name_repository import NameRepository
 
@@ -62,11 +63,11 @@ class NameService:
             return result
 
         except APIError as e:
-            raise e
+            handle_api_error(e)
         except DatabaseError as e:
-            raise e
+            handle_database_error(e)
         except Exception as e:
-            raise APIError(f"Unexpected error while processing name {name}: {str(e)}")
+            handle_api_error(APIError(f"Unexpected error while processing name {name}: {str(e)}"))
 
     async def get_popular_names_by_country(self, country_code: str) -> List[PopularNameResponse]:
         try:

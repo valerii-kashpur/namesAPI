@@ -1,5 +1,3 @@
-from datetime import datetime, timedelta
-
 import jwt
 from fastapi import HTTPException, status, Depends
 from fastapi.security import HTTPAuthorizationCredentials, SecurityScopes
@@ -10,6 +8,7 @@ from src.config.auth_settings import auth_settings
 from src.database.db import get_db
 from src.exceptions.custom_exceptions import APIError
 from src.repositories.user_repository import UserRepository
+from src.utils.jwt import create_jwt_token
 
 
 async def auth_get_current_user(
@@ -61,11 +60,12 @@ class AuthService:
         self.user_repo = UserRepository(db)
 
     def create_access_token(self, data: dict) -> str:
-        to_encode = data.copy()
-        expire = datetime.utcnow() + timedelta(minutes=auth_settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-        to_encode.update({"exp": expire})
-        encoded_jwt = jwt.encode(to_encode, auth_settings.SECRET_KEY, algorithm=auth_settings.ALGORITHM)
-        return encoded_jwt
+        return create_jwt_token(
+            data=data,
+            secret_key=auth_settings.SECRET_KEY,
+            algorithm=auth_settings.ALGORITHM,
+            expires_minutes=auth_settings.ACCESS_TOKEN_EXPIRE_MINUTES
+        )
 
     async def register(self, user_data: UserCreate) -> Token:
         try:

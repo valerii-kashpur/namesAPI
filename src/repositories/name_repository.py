@@ -4,6 +4,7 @@ from sqlalchemy.exc import SQLAlchemyError, DatabaseError
 from sqlalchemy.orm import Session
 
 from src.database.models import Name, NameCountry, Country
+from src.utils.normalize import normalize_name
 
 
 class NameRepository:
@@ -11,7 +12,7 @@ class NameRepository:
         self.db = db
 
     def get_or_create_name(self, name: str) -> Name:
-        normalized_name = name.strip().capitalize()
+        normalized_name = normalize_name(name)
         name_record = self.db.query(Name).filter(Name.name == normalized_name).first()
         if name_record:
             name_record.count_of_requests += 1
