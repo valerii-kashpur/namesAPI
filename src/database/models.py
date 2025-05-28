@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -11,7 +9,7 @@ class Name(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, index=True)
     count_of_requests = Column(Integer, default=0)
-    last_accessed_at = Column(DateTime, default=datetime.utcnow)
+    last_accessed_at = Column(DateTime(timezone=True), nullable=False)
     countries = relationship("NameCountry", back_populates="name")
 
 
