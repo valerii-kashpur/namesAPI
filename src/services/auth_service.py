@@ -12,9 +12,9 @@ from src.utils.jwt import create_jwt_token
 
 
 async def auth_get_current_user(
-        security_scopes: SecurityScopes,
-        credentials: HTTPAuthorizationCredentials,
-        db: Session
+    security_scopes: SecurityScopes,
+    credentials: HTTPAuthorizationCredentials,
+    db: Session,
 ):
     token = credentials.credentials
     if not token:
@@ -24,7 +24,9 @@ async def auth_get_current_user(
             headers={"WWW-Authenticate": "Bearer"},
         )
     try:
-        payload = jwt.decode(token, auth_settings.SECRET_KEY, algorithms=[auth_settings.ALGORITHM])
+        payload = jwt.decode(
+            token, auth_settings.SECRET_KEY, algorithms=[auth_settings.ALGORITHM]
+        )
         username: str = payload.get("sub")
         if username is None:
             raise HTTPException(
@@ -64,7 +66,7 @@ class AuthService:
             data=data,
             secret_key=auth_settings.SECRET_KEY,
             algorithm=auth_settings.ALGORITHM,
-            expires_minutes=auth_settings.ACCESS_TOKEN_EXPIRE_MINUTES
+            expires_minutes=auth_settings.ACCESS_TOKEN_EXPIRE_MINUTES,
         )
 
     async def register(self, user_data: UserCreate) -> Token:
@@ -75,7 +77,7 @@ class AuthService:
             user = self.user_repo.create_user(
                 username=user_data.username,
                 email=user_data.email,
-                password=user_data.password
+                password=user_data.password,
             )
             access_token = self.create_access_token(data={"sub": user.username})
             return Token(access_token=access_token, token_type="bearer")
@@ -87,7 +89,9 @@ class AuthService:
     async def login(self, user_data: UserLogin) -> Token:
         try:
             user = self.user_repo.get_user_by_username(user_data.username)
-            if not user or not self.user_repo.pwd_context.verify(user_data.password, user.hashed_password):
+            if not user or not self.user_repo.pwd_context.verify(
+                user_data.password, user.hashed_password
+            ):
                 raise APIError("Invalid username or password", status_code=401)
             access_token = self.create_access_token(data={"sub": user.username})
             return Token(access_token=access_token, token_type="bearer")

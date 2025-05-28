@@ -28,28 +28,47 @@ def mock_country_repo():
 
 
 @pytest.fixture
-def name_service(mock_nationalize_client, mock_rest_countries_client, mock_name_repo, mock_country_repo):
+def name_service(
+    mock_nationalize_client,
+    mock_rest_countries_client,
+    mock_name_repo,
+    mock_country_repo,
+):
     return NameService(
         nationalize_client=mock_nationalize_client,
         rest_countries_client=mock_rest_countries_client,
         name_repo=mock_name_repo,
-        country_repo=mock_country_repo
+        country_repo=mock_country_repo,
     )
 
 
 @pytest.mark.asyncio
-async def test_get_countries_by_name_cached(name_service, mock_name_repo, mock_country_repo):
+async def test_get_countries_by_name_cached(
+    name_service, mock_name_repo, mock_country_repo
+):
     mock_name = MagicMock()
     mock_name.id = 1
     mock_name.name = "John"
     mock_country = MagicMock()
     mock_country.configure_mock(
-        id=1, code="US", name="USA", full_name="United States", region="Americas",
-        subregion="North America", independent=True, google_maps_url="https://maps.google.com",
-        open_street_map_url="https://openstreetmap.org", capital_name="Washington",
-        capital_latitude=38.9, capital_longitude=-77.0, flag_png_url="flag.png",
-        flag_svg_url="flag.svg", flag_alt="US flag", coat_of_arms_png_url="coa.png",
-        coat_of_arms_svg_url="coa.svg", borders="CA,MX"
+        id=1,
+        code="US",
+        name="USA",
+        full_name="United States",
+        region="Americas",
+        subregion="North America",
+        independent=True,
+        google_maps_url="https://maps.google.com",
+        open_street_map_url="https://openstreetmap.org",
+        capital_name="Washington",
+        capital_latitude=38.9,
+        capital_longitude=-77.0,
+        flag_png_url="flag.png",
+        flag_svg_url="flag.svg",
+        flag_alt="US flag",
+        coat_of_arms_png_url="coa.png",
+        coat_of_arms_svg_url="coa.svg",
+        borders="CA,MX",
     )
     mock_name_country = MagicMock()
     mock_name_country.name_id = 1
@@ -67,7 +86,9 @@ async def test_get_countries_by_name_cached(name_service, mock_name_repo, mock_c
 
 
 @pytest.mark.asyncio
-async def test_get_countries_by_name_api(name_service, mock_name_repo, mock_rest_countries_client, mock_country_repo):
+async def test_get_countries_by_name_api(
+    name_service, mock_name_repo, mock_rest_countries_client, mock_country_repo
+):
     mock_name = MagicMock()
     mock_name.id = 1
     mock_name.name = "John"
@@ -78,21 +99,41 @@ async def test_get_countries_by_name_api(name_service, mock_name_repo, mock_rest
     }
     mock_country_repo.get_country_by_code.return_value = None
     mock_rest_countries_client.get_country_by_code.return_value = {
-        "name": {"common": "USA"}, "region": "Americas", "subregion": "North America",
-        "independent": True, "capital": ["Washington"], "latlng": [38.9, -77.0],
+        "name": {"common": "USA"},
+        "region": "Americas",
+        "subregion": "North America",
+        "independent": True,
+        "capital": ["Washington"],
+        "latlng": [38.9, -77.0],
         "flags": {"png": "flag.png", "svg": "flag.svg", "alt": "US flag"},
-        "coatOfArms": {"png": "coa.png", "svg": "coa.svg"}, "borders": ["CA", "MX"],
-        "maps": {"googleMaps": "https://maps.google.com", "openStreetMaps": "https://openstreetmap.org"},
-        "capitalInfo": {"latlng": [38.9, -77.0]}
+        "coatOfArms": {"png": "coa.png", "svg": "coa.svg"},
+        "borders": ["CA", "MX"],
+        "maps": {
+            "googleMaps": "https://maps.google.com",
+            "openStreetMaps": "https://openstreetmap.org",
+        },
+        "capitalInfo": {"latlng": [38.9, -77.0]},
     }
     mock_country = MagicMock()
     mock_country.configure_mock(
-        id=1, code="US", name="USA", full_name="United States", region="Americas",
-        subregion="North America", independent=True, google_maps_url="https://maps.google.com",
-        open_street_map_url="https://openstreetmap.org", capital_name="Washington",
-        capital_latitude=38.9, capital_longitude=-77.0, flag_png_url="flag.png",
-        flag_svg_url="flag.svg", flag_alt="US flag", coat_of_arms_png_url="coa.png",
-        coat_of_arms_svg_url="coa.svg", borders="CA,MX"
+        id=1,
+        code="US",
+        name="USA",
+        full_name="United States",
+        region="Americas",
+        subregion="North America",
+        independent=True,
+        google_maps_url="https://maps.google.com",
+        open_street_map_url="https://openstreetmap.org",
+        capital_name="Washington",
+        capital_latitude=38.9,
+        capital_longitude=-77.0,
+        flag_png_url="flag.png",
+        flag_svg_url="flag.svg",
+        flag_alt="US flag",
+        coat_of_arms_png_url="coa.png",
+        coat_of_arms_svg_url="coa.svg",
+        borders="CA,MX",
     )
     mock_country_repo.create_country_from_rest.return_value = mock_country
 
@@ -119,7 +160,9 @@ async def test_get_countries_by_name_empty(name_service, mock_name_repo):
 
 
 @pytest.mark.asyncio
-async def test_get_popular_names_by_country_success(name_service, mock_country_repo, mock_name_repo):
+async def test_get_popular_names_by_country_success(
+    name_service, mock_country_repo, mock_name_repo
+):
     mock_country = MagicMock()
     mock_country.configure_mock(id=1, code="US", name="USA")
     mock_name1 = MagicMock()
@@ -150,7 +193,9 @@ async def test_get_popular_names_by_country_not_found(name_service, mock_country
 
 
 @pytest.mark.asyncio
-async def test_get_popular_names_by_country_empty(name_service, mock_country_repo, mock_name_repo):
+async def test_get_popular_names_by_country_empty(
+    name_service, mock_country_repo, mock_name_repo
+):
     mock_country = MagicMock()
     mock_country.configure_mock(id=1, code="US", name="USA")
     mock_country_repo.get_country_by_code.return_value = mock_country

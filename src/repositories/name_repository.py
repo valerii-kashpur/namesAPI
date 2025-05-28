@@ -22,13 +22,15 @@ class NameRepository:
             name_record = Name(
                 name=normalized_name,
                 count_of_requests=1,
-                last_accessed_at=datetime.now(UTC)
+                last_accessed_at=datetime.now(UTC),
             )
             self.db.add(name_record)
         self.db.commit()
         return name_record
 
-    def get_name_countries(self, name_id: int, days_threshold: int = 1) -> list[NameCountry]:
+    def get_name_countries(
+        self, name_id: int, days_threshold: int = 1
+    ) -> list[NameCountry]:
         name = self.db.query(Name).filter(Name.id == name_id).first()
         if not name:
             return []
@@ -38,11 +40,15 @@ class NameRepository:
             else name.last_accessed_at
         )
         if last_accessed > datetime.now(timezone.utc) - timedelta(days=days_threshold):
-            return self.db.query(NameCountry).filter(NameCountry.name_id == name_id).all()
+            return (
+                self.db.query(NameCountry).filter(NameCountry.name_id == name_id).all()
+            )
         return []
 
     def add_name_country(self, name_id: int, country_id: int, probability: float):
-        name_country = NameCountry(name_id=name_id, country_id=country_id, probability=probability)
+        name_country = NameCountry(
+            name_id=name_id, country_id=country_id, probability=probability
+        )
         self.db.add(name_country)
         self.db.commit()
 
@@ -60,4 +66,5 @@ class NameRepository:
             return result
         except SQLAlchemyError as e:
             raise DatabaseError(
-                f"Database error while fetching popular names for country {country_code}: {str(e.__cause__ or e)}")
+                f"Database error while fetching popular names for country {country_code}: {str(e.__cause__ or e)}"
+            )

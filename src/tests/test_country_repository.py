@@ -43,7 +43,7 @@ def test_create_country_success(country_repo, mock_db):
         "code": "US",
         "name": "United States",
         "full_name": "United States of America",
-        "region": "Americas"
+        "region": "Americas",
     }
 
     result = country_repo.create_country(**country_data)
@@ -71,7 +71,7 @@ def test_create_country_from_rest_success(country_repo, mock_db, mocker):
         "code": "US",
         "name": "United States",
         "full_name": "United States of America",
-        "region": "Americas"
+        "region": "Americas",
     }
     mock_rest_country.to_country_data.return_value = country_data
     mock_country = MagicMock()
@@ -89,12 +89,19 @@ def test_create_country_from_rest_success(country_repo, mock_db, mocker):
 
 def test_create_country_from_rest_database_error(country_repo, mock_db, mocker):
     mock_rest_country = MagicMock(spec=RestCountryResponse)
-    mock_rest_country.to_country_data.return_value = {"code": "US", "name": "United States"}
-    mocker.patch.object(country_repo, "create_country", side_effect=SQLAlchemyError("DB error"))
+    mock_rest_country.to_country_data.return_value = {
+        "code": "US",
+        "name": "United States",
+    }
+    mocker.patch.object(
+        country_repo, "create_country", side_effect=SQLAlchemyError("DB error")
+    )
 
     with pytest.raises(DatabaseError) as exc_info:
         country_repo.create_country_from_rest(mock_rest_country)
-    assert "Database error while mapping REST country data: DB error" in str(exc_info.value)
+    assert "Database error while mapping REST country data: DB error" in str(
+        exc_info.value
+    )
 
 
 def test_create_country_from_rest_unexpected_error(country_repo, mock_db, mocker):
@@ -103,4 +110,6 @@ def test_create_country_from_rest_unexpected_error(country_repo, mock_db, mocker
 
     with pytest.raises(DatabaseError) as exc_info:
         country_repo.create_country_from_rest(mock_rest_country)
-    assert "Unexpected error while mapping REST country data: Invalid data" in str(exc_info.value)
+    assert "Unexpected error while mapping REST country data: Invalid data" in str(
+        exc_info.value
+    )

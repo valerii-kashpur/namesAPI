@@ -42,7 +42,9 @@ def test_get_user_by_username_not_found(user_repo, mock_db):
 def test_create_user_success(user_repo, mock_db, mocker):
     mocker.patch.object(user_repo.pwd_context, "hash", return_value="hashed_password")
 
-    user = user_repo.create_user(username="newuser", email="new@example.com", password="password")
+    user = user_repo.create_user(
+        username="newuser", email="new@example.com", password="password"
+    )
     assert user is not None
     assert user.username == "newuser"
     assert user.email == "new@example.com"
@@ -56,7 +58,9 @@ def test_create_user_database_error(user_repo, mock_db, mocker):
     mock_db.commit.side_effect = SQLAlchemyError("DB error")
 
     with pytest.raises(DatabaseError) as exc_info:
-        user_repo.create_user(username="newuser", email="new@example.com", password="password")
+        user_repo.create_user(
+            username="newuser", email="new@example.com", password="password"
+        )
     assert "Database error while creating user" in str(exc_info.value)
     mock_db.add.assert_called_once()
     mock_db.rollback.assert_called_once()

@@ -12,7 +12,9 @@ class RestCountriesClientInterface(ABC):
 class RestCountriesClient(RestCountriesClientInterface):
     async def get_country_by_code(self, code: str):
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://restcountries.com/v3.1/alpha/{code}") as response:
+            async with session.get(
+                f"https://restcountries.com/v3.1/alpha/{code}"
+            ) as response:
                 if response.status != 200:
                     return None
                 data = await response.json()

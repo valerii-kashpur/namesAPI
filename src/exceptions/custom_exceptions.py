@@ -16,12 +16,16 @@ class APIError(Exception):
 
 
 class DatabaseError(AppException):
-    def __init__(self, message: str, details: Optional[str] = None, status_code: int = 500):
+    def __init__(
+        self, message: str, details: Optional[str] = None, status_code: int = 500
+    ):
         self.details = details
         super().__init__(message, status_code)
 
 
 class ValidationError(AppException):
-    def __init__(self, message: str, details: Optional[str] = None, status_code: int = 400):
+    def __init__(
+        self, message: str, details: Optional[str] = None, status_code: int = 400
+    ):
         self.details = details
         super().__init__(message, status_code)

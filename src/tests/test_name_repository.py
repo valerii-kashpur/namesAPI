@@ -20,7 +20,9 @@ def name_repo(mock_db):
 
 def test_get_or_create_name_existing(name_repo, mock_db):
     mock_name = MagicMock()
-    mock_name.configure_mock(name="john", count_of_requests=5, last_accessed_at=datetime.now(UTC))
+    mock_name.configure_mock(
+        name="john", count_of_requests=5, last_accessed_at=datetime.now(UTC)
+    )
     mock_db.query.return_value.filter.return_value.first.return_value = mock_name
 
     result = name_repo.get_or_create_name("John")
@@ -44,7 +46,9 @@ def test_get_name_countries_recent(name_repo, mock_db):
     mock_name.configure_mock(id=1, last_accessed_at=datetime.now(UTC))
     mock_name_country = MagicMock(name_id=1, country_id=1, probability=0.9)
     mock_db.query.return_value.filter.return_value.first.return_value = mock_name
-    mock_db.query.return_value.filter.return_value.all.return_value = [mock_name_country]
+    mock_db.query.return_value.filter.return_value.all.return_value = [
+        mock_name_country
+    ]
 
     result = name_repo.get_name_countries("John", 1)
     assert len(result) == 1
@@ -54,7 +58,9 @@ def test_get_name_countries_recent(name_repo, mock_db):
 
 def test_get_name_countries_outdated(name_repo, mock_db):
     mock_name = MagicMock()
-    mock_name.configure_mock(id=1, last_accessed_at=datetime.now(UTC) - timedelta(days=2))
+    mock_name.configure_mock(
+        id=1, last_accessed_at=datetime.now(UTC) - timedelta(days=2)
+    )
     mock_db.query.return_value.filter.return_value.first.return_value = mock_name
 
     result = name_repo.get_name_countries("John", 1)
@@ -81,7 +87,9 @@ def test_get_popular_names_by_country_success(name_repo, mock_db):
     mock_name2.configure_mock(name="Jane", count_of_requests=50)
     mock_query = mock_db.query.return_value
     mock_query.join.return_value.join.return_value.filter.return_value.order_by.return_value.limit.return_value.all.return_value = [
-        mock_name1, mock_name2]
+        mock_name1,
+        mock_name2,
+    ]
 
     result = name_repo.get_popular_names_by_country("US")
     assert len(result) == 2
@@ -93,9 +101,12 @@ def test_get_popular_names_by_country_success(name_repo, mock_db):
 def test_get_popular_names_by_country_database_error(name_repo, mock_db):
     mock_query = mock_db.query.return_value
     mock_query.join.return_value.join.return_value.filter.return_value.order_by.return_value.limit.return_value.all.side_effect = OperationalError(
-        statement="SELECT error", params=None, orig=Exception("Database error"))
+        statement="SELECT error", params=None, orig=Exception("Database error")
+    )
 
     with pytest.raises(DatabaseError) as exc_info:
         name_repo.get_popular_names_by_country("US")
-    assert "Database error while fetching popular names for country US: (builtins.Exception) Database error" in str(
-        exc_info.value)
+    assert (
+        "Database error while fetching popular names for country US: (builtins.Exception) Database error"
+        in str(exc_info.value)
+    )

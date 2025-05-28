@@ -14,4 +14,6 @@ def get_name_service(db: Session = Depends(get_db)):
     rest_countries_client = RestCountriesClient()
     name_repo = NameRepository(db)
     country_repo = CountryRepository(db)
-    return NameService(nationalize_client, rest_countries_client, name_repo, country_repo)
+    return NameService(
+        nationalize_client, rest_countries_client, name_repo, country_repo
+    )

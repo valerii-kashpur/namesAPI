@@ -28,6 +28,7 @@ class CountryBase(BaseModel):
 
 class CountryDTO(CountryBase):
     """DTO для преобразования модели Country в данные API."""
+
     pass
 
 
@@ -66,7 +67,7 @@ class RestCountryResponse(BaseModel):
             "flag_alt": self.flags.get("alt"),
             "coat_of_arms_png_url": self.coatOfArms.get("png"),
             "coat_of_arms_svg_url": self.coatOfArms.get("svg"),
-            "borders": ",".join(self.borders) if self.borders else "(island)"
+            "borders": ",".join(self.borders) if self.borders else "(island)",
         }
 
 

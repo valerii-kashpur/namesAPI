@@ -29,6 +29,10 @@ class CountryRepository:
             country_data = rest_country.to_country_data()
             return self.create_country(**country_data)
         except SQLAlchemyError as e:
-            raise DatabaseError(f"Database error while mapping REST country data: {str(e)}")
+            raise DatabaseError(
+                f"Database error while mapping REST country data: {str(e)}"
+            )
         except Exception as e:
-            raise DatabaseError(f"Unexpected error while mapping REST country data: {str(e)}")
+            raise DatabaseError(
+                f"Unexpected error while mapping REST country data: {str(e)}"
+            )

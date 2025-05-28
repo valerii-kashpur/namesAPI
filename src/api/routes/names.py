@@ -12,9 +12,9 @@ router = APIRouter(tags=["names"])
 
 @router.get("/names/", response_model=List[NameCountryResponse])
 async def get_countries_by_name(
-        name: str,
-        service: NameService = Depends(get_name_service),
-        current_user=Security(get_current_user)
+    name: str,
+    service: NameService = Depends(get_name_service),
+    current_user=Security(get_current_user),
 ):
     if not name:
         raise HTTPException(status_code=400, detail="Name parameter is required")
